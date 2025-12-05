@@ -1,4 +1,4 @@
 {
-    "context": ".",
-    "dockerfile": "Dockerfile"
+    "context": "kanban_board_frontend",
+    "dockerfile": "kanban_board_frontend/Dockerfile"
 }

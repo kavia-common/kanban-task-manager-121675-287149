@@ -2,14 +2,14 @@ FROM node:18-alpine as build
 
 WORKDIR /app
 
-# Copy package files from the frontend subdirectory
-COPY kanban_board_frontend/package.json kanban_board_frontend/package-lock.json ./
+# Copy package files
+COPY package.json package-lock.json ./
 
 # Install dependencies
 RUN npm ci --silent
 
-# Copy the rest of the application code from the subdirectory
-COPY kanban_board_frontend/ ./
+# Copy source code
+COPY . ./
 
 # Build Arguments
 ARG REACT_APP_API_BASE
@@ -21,7 +21,7 @@ ARG REACT_APP_NEXT_TELEMETRY_DISABLED
 ARG REACT_APP_ENABLE_SOURCE_MAPS
 ARG REACT_APP_PORT
 
-# Environment Variables
+# Environment Variables for build
 ENV REACT_APP_API_BASE=$REACT_APP_API_BASE
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
 ENV REACT_APP_FRONTEND_URL=$REACT_APP_FRONTEND_URL
