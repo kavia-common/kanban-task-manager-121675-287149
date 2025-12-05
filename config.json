@@ -1,4 +1,5 @@
 {
-    "context": "kanban_board_frontend",
-    "dockerfile": "kanban_board_frontend/Dockerfile"
+    "workingDir": "/home/kavia/workspace/code-generation/kanban-task-manager-121675-287149/kanban_board_frontend",
+    "context": ".",
+    "dockerfile": "Dockerfile"
 }
