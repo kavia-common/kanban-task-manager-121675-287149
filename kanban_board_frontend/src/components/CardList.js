@@ -15,6 +15,7 @@ function CardList({ column, cards: colCardsProp, isCompact = false }) {
   // colCards: sorted - passed in or computed
   const { cards, addCard, updateCard } = useKanban();
   const [adding, setAdding] = useState(false);
+  const { showToast } = useFeedback();
 
   // Prefer passed colCards (sorted), but fallback for tests:
   const colCards = colCardsProp ||
@@ -47,9 +48,13 @@ function CardList({ column, cards: colCardsProp, isCompact = false }) {
     const priority = e.target.priority.value;
     const status = e.target.status.value;
     const due_date = e.target.due_date.value;
-    await addCard(column.id, { feature, description, assignee, notes, priority, status, due_date });
-    setAdding(false);
-    e.target.reset();
+    const error = await addCard(column.id, { feature, description, assignee, notes, priority, status, due_date });
+    if (error) {
+       if (showToast) showToast(error.message || "Failed to add card", "error");
+    } else {
+       setAdding(false);
+       e.target.reset();
+    }
   };
 
   return (
