@@ -35,8 +35,8 @@ The main brand colors are defined as CSS variables in `src/App.css`:
 
 ```css
 :root {
-  --kavia-orange: #E87A41;
-  --kavia-dark: #1A1A1A;
+  --kavia-orange: #e87a41;
+  --kavia-dark: #1a1a1a;
   --text-color: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.7);
   --border-color: rgba(255, 255, 255, 0.1);
@@ -45,9 +45,10 @@ The main brand colors are defined as CSS variables in `src/App.css`:
 
 ### Components
 
-This template uses pure HTML/CSS components instead of a UI framework. You can find component styles in `src/App.css`. 
+This template uses pure HTML/CSS components instead of a UI framework. You can find component styles in `src/App.css`.
 
 Common components include:
+
 - Buttons (`.btn`, `.btn-large`)
 - Container (`.container`)
 - Navigation (`.navbar`)

@@ -20,7 +20,10 @@ export function useFeedback() {
 }
 
 // Global expand/shorten context for cards
-const ExpandModeContext = createContext({ isCompact: false, setIsCompact: () => {} });
+const ExpandModeContext = createContext({
+  isCompact: false,
+  setIsCompact: () => {},
+});
 export function useExpandMode() {
   return useContext(ExpandModeContext);
 }
@@ -31,36 +34,39 @@ export function useExpandMode() {
  * Accepts:
  *   cards: Array of card objects
  *   filters: { assignees:[], priorities:[], statuses:[], columns:[], dueFrom:"", dueTo:"" }
- *   columns: Array of columns (for mapping)
  * Returns:
  *   Filtered array of cards.
  */
-function filterCardsAND(cards, filters, columns) {
-  return cards.filter(c => {
+function filterCardsAND(cards, filters) {
+  return cards.filter((c) => {
     // Assignee multi-filter (intersection)
     if (
       filters.assignees &&
       filters.assignees.length > 0 &&
       (!c.assignee || !filters.assignees.includes(c.assignee))
-    ) return false;
+    )
+      return false;
     // Priority
     if (
       filters.priorities &&
       filters.priorities.length > 0 &&
       (!c.priority || !filters.priorities.includes(c.priority))
-    ) return false;
+    )
+      return false;
     // Status
     if (
       filters.statuses &&
       filters.statuses.length > 0 &&
       (!c.status || !filters.statuses.includes(c.status))
-    ) return false;
+    )
+      return false;
     // Column (by id)
     if (
       filters.columns &&
       filters.columns.length > 0 &&
       (!c.column_id || !filters.columns.includes(c.column_id))
-    ) return false;
+    )
+      return false;
     // Due Date Range
     if (filters.dueFrom || filters.dueTo) {
       if (!c.due_date) return false;
@@ -117,47 +123,64 @@ function KanbanBoardInner() {
     priorities: [],
     statuses: [],
     columns: [],
-    dueFrom: "",
-    dueTo: ""
+    dueFrom: '',
+    dueTo: '',
   });
 
   // Filtered cards, memoized for perf (updates when filters/cards/columns change)
   const filteredCards = React.useMemo(
-    () => filterCardsAND(cards || [], filters, columns),
-    [cards, filters, columns]
+    () => filterCardsAND(cards || [], filters),
+    [cards, filters],
   );
 
   React.useEffect(() => {
-    if (error) showToast(error, "error", 3800);
+    if (error) showToast(error, 'error', 3800);
     // eslint-disable-next-line
   }, [error]);
 
   // Handles local column reordering, triggers Supabase sync
   const moveColumn = (fromIdx, toIdx) => {
     // Defensive: do not swap to invalid
-    if (fromIdx === toIdx || fromIdx < 0 || toIdx < 0 || fromIdx >= columns.length || toIdx >= columns.length) return;
+    if (
+      fromIdx === toIdx ||
+      fromIdx < 0 ||
+      toIdx < 0 ||
+      fromIdx >= columns.length ||
+      toIdx >= columns.length
+    )
+      return;
     const reordered = [...columns];
     const [removed] = reordered.splice(fromIdx, 1);
     reordered.splice(toIdx, 0, removed);
     // Renumber positions: 1-based sequencing
     const newOrder = reordered.map((col, i) => ({
       id: col.id,
-      position: i + 1
+      position: i + 1,
     }));
-    reorderColumns(newOrder)
-      .catch(e => showToast && showToast("Failed to reorder columns: " + (e.message || e), "error"));
+    reorderColumns(newOrder).catch(
+      (e) =>
+        showToast &&
+        showToast('Failed to reorder columns: ' + (e.message || e), 'error'),
+    );
   };
 
   // Only define DraggableKanbanColumn once!
-  function DraggableKanbanColumn({ column, index, moveColumn, draggedCol, setDraggedCol, totalColumns, filteredCards, isCompact }) {
+  function DraggableKanbanColumn({
+    column,
+    index,
+    moveColumn,
+    setDraggedCol,
+    filteredCards,
+    isCompact,
+  }) {
     // Drag source
-    const [{ isDragging }, drag, preview] = useDrag({
+    const [{ isDragging }, drag] = useDrag({
       type: COLUMN_TYPE,
       item: () => {
         setDraggedCol(index);
         return { id: column.id, index };
       },
-      collect: monitor => ({
+      collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
       end: () => setDraggedCol(null),
@@ -167,11 +190,11 @@ function KanbanBoardInner() {
     const [{ isOver, canDrop }, drop] = useDrop({
       accept: COLUMN_TYPE,
       canDrop: (item) => item.id !== column.id,
-      hover: (item, monitor) => {
+      hover: (item) => {
         if (item.index === index) return;
         // No op to prevent multiple updates
       },
-      drop: (item, monitor) => {
+      drop: (item) => {
         if (item.index !== index) {
           moveColumn(item.index, index);
         }
@@ -184,8 +207,8 @@ function KanbanBoardInner() {
 
     // Accessible markup/ARIA
     const draggableProps = {
-      ref: node => drag(drop(node)),
-      'role': 'listitem',
+      ref: (node) => drag(drop(node)),
+      role: 'listitem',
       'aria-grabbed': isDragging,
       'aria-label': `Column: ${column.title}`,
       tabIndex: 0,
@@ -193,19 +216,25 @@ function KanbanBoardInner() {
         opacity: isDragging ? 0.3 : 1,
         zIndex: isDragging ? 90 : 1,
         boxShadow: isDragging ? '0 2px 18px #38B2AC66' : undefined,
-        border: (isOver && canDrop) ? '3.5px solid #38B2AC' : undefined,
-        outline: (isOver && canDrop) ? '2.5px dashed #42fae9' : undefined,
-        transition: 'box-shadow .17s, outline .13s, opacity .19s, border .18s'
-      }
+        border: isOver && canDrop ? '3.5px solid #38B2AC' : undefined,
+        outline: isOver && canDrop ? '2.5px dashed #42fae9' : undefined,
+        transition: 'box-shadow .17s, outline .13s, opacity .19s, border .18s',
+      },
     };
 
     // Keyboard reordering removed per requirement: Arrow keys disabled
-    const handleKeyDown = () => {};
 
     // Pass filteredCards to Column if present
     return (
       <div {...draggableProps}>
-        <Column column={column} index={index} isDragging={isDragging} isOver={isOver && canDrop} filteredCards={filteredCards} isCompact={isCompact} />
+        <Column
+          column={column}
+          index={index}
+          isDragging={isDragging}
+          isOver={isOver && canDrop}
+          filteredCards={filteredCards}
+          isCompact={isCompact}
+        />
       </div>
     );
   }
@@ -214,7 +243,7 @@ function KanbanBoardInner() {
     <div className="kanban-app-container">
       {!fullScreen && (
         <Toolbar
-          onToggleFullscreen={() => setFullScreen(v => !v)}
+          onToggleFullscreen={() => setFullScreen((v) => !v)}
           isFullscreen={fullScreen}
         />
       )}
@@ -249,7 +278,9 @@ function KanbanBoardInner() {
               draggedCol={draggedCol}
               setDraggedCol={setDraggedCol}
               totalColumns={columns.length}
-              filteredCards={filteredCards.filter(c => c.column_id === col.id)}
+              filteredCards={filteredCards.filter(
+                (c) => c.column_id === col.id,
+              )}
               isCompact={isCompact}
             />
           ))
@@ -265,7 +296,7 @@ export default function KanbanBoard() {
   const [toast, setToast] = useState(null);
 
   // PUBLIC_INTERFACE
-  const showToast = (message, type = "success", duration = 3000) => {
+  const showToast = (message, type = 'success', duration = 3000) => {
     setToast({ id: Date.now(), message, type, duration });
   };
 

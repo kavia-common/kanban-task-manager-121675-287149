@@ -64,14 +64,17 @@ export default function Summary() {
 
   React.useEffect(() => {
     try {
-      localStorage.setItem('summary-collapsed-columns', JSON.stringify(collapsed));
+      localStorage.setItem(
+        'summary-collapsed-columns',
+        JSON.stringify(collapsed),
+      );
     } catch {
       // ignore
     }
   }, [collapsed]);
 
   const toggleCollapsed = (id) => {
-    setCollapsed(prev => ({ ...prev, [id]: !prev[id] }));
+    setCollapsed((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   // Cards by column, sorted by position
@@ -82,20 +85,30 @@ export default function Summary() {
       if (map.has(c.column_id)) map.get(c.column_id).push(c);
     });
     map.forEach((list) =>
-      list.sort((a, b) => (a.position || 0) - (b.position || 0))
+      list.sort((a, b) => (a.position || 0) - (b.position || 0)),
     );
     return map;
   }, [columns, cards]);
 
   // Move column via context API
   const moveColumn = (fromIdx, toIdx) => {
-    if (!columns || fromIdx === toIdx || fromIdx < 0 || toIdx < 0 || fromIdx >= columns.length || toIdx >= columns.length) {
+    if (
+      !columns ||
+      fromIdx === toIdx ||
+      fromIdx < 0 ||
+      toIdx < 0 ||
+      fromIdx >= columns.length ||
+      toIdx >= columns.length
+    ) {
       return;
     }
     const reordered = [...columns];
     const [removed] = reordered.splice(fromIdx, 1);
     reordered.splice(toIdx, 0, removed);
-    const ordered = reordered.map((col, i) => ({ id: col.id, position: i + 1 }));
+    const ordered = reordered.map((col, i) => ({
+      id: col.id,
+      position: i + 1,
+    }));
     reorderColumns(ordered).catch(() => {
       // No toast here to keep summary clean
     });
@@ -131,7 +144,8 @@ export default function Summary() {
     const count = (columns || []).length || 0;
     if (count === 0 || containerWidth === 0) return;
 
-    const perCol = containerWidth / count - (GAP * (count - 1)) / Math.max(1, count);
+    const perCol =
+      containerWidth / count - (GAP * (count - 1)) / Math.max(1, count);
     // Determine density thresholds
     let dc = '';
     if (perCol < 240) dc = 'summary-density-1';
@@ -152,7 +166,7 @@ export default function Summary() {
     if (!fullScreen) return;
     const onResize = () => {
       // retrigger effect by cloning cssVars to force recalculation
-      setCssVars(v => ({ ...v }));
+      setCssVars((v) => ({ ...v }));
     };
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
@@ -195,8 +209,10 @@ export default function Summary() {
         aria-label={`Column ${column.title}`}
         style={{
           opacity: isDragging ? 0.35 : 1,
-          outline: (isOver && canDrop) ? '3px solid #38B2AC' : undefined,
-          boxShadow: isDragging ? '0 2px 18px rgba(56,178,172,0.35)' : undefined,
+          outline: isOver && canDrop ? '3px solid #38B2AC' : undefined,
+          boxShadow: isDragging
+            ? '0 2px 18px rgba(56,178,172,0.35)'
+            : undefined,
         }}
         tabIndex={0}
         onKeyDown={(e) => {
@@ -206,7 +222,9 @@ export default function Summary() {
         <header className="summary-col-header">
           <div className="summary-col-title" title={column.title}>
             <span className="summary-col-title-text">{column.title}</span>
-            <span className="summary-col-count" title="Card count">{items.length}</span>
+            <span className="summary-col-count" title="Card count">
+              {items.length}
+            </span>
           </div>
           <div className="summary-col-actions">
             <button
@@ -216,7 +234,11 @@ export default function Summary() {
               title={isCollapsed ? 'Expand' : 'Minimize'}
               onClick={() => toggleCollapsed(column.id)}
             >
-              {isCollapsed ? <UnfoldMoreIcon fontSize="small" /> : <UnfoldLessIcon fontSize="small" />}
+              {isCollapsed ? (
+                <UnfoldMoreIcon fontSize="small" />
+              ) : (
+                <UnfoldLessIcon fontSize="small" />
+              )}
             </button>
           </div>
         </header>
@@ -224,7 +246,10 @@ export default function Summary() {
         {!isCollapsed && (
           <div className="summary-col-content">
             {items.length > 0 ? (
-              <ul className="summary-col-cards" aria-label={`${column.title} cards`}>
+              <ul
+                className="summary-col-cards"
+                aria-label={`${column.title} cards`}
+              >
                 {items.map((card) => (
                   <li
                     key={card.id}
@@ -236,7 +261,9 @@ export default function Summary() {
                       aria-hidden
                       style={{ background: getStatusDotColor(card.status) }}
                     />
-                    <span className="summary-col-card-title">{card.feature}</span>
+                    <span className="summary-col-card-title">
+                      {card.feature}
+                    </span>
                     {card.assignee && (
                       <span className="summary-col-assignee" title="Assignee">
                         @{card.assignee}
@@ -280,13 +307,33 @@ export default function Summary() {
   if (error) return <div className="kanban-error">{error}</div>;
 
   return (
-    <div className="summary-page" style={fullScreen ? { fontSize: `calc(1rem * var(--summary-scale, 1))` } : undefined}>
+    <div
+      className="summary-page"
+      style={
+        fullScreen
+          ? { fontSize: `calc(1rem * var(--summary-scale, 1))` }
+          : undefined
+      }
+    >
       <div className="container summary-container" style={cssVars}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 12,
+          }}
+        >
           <div>
-            <h1 className="page-title" style={{ marginTop: 8, marginBottom: 6 }}>Board Summary</h1>
+            <h1
+              className="page-title"
+              style={{ marginTop: 8, marginBottom: 6 }}
+            >
+              Board Summary
+            </h1>
             <p className="page-subtitle" style={{ marginBottom: 12 }}>
-              Presentation view (clean, draggable columns). Tip: Press "m" to minimize columns.
+              Presentation view (clean, draggable columns). Tip: Press "m" to
+              minimize columns.
             </p>
           </div>
           <div>
@@ -295,11 +342,22 @@ export default function Summary() {
               className="summary-col-actionbtn"
               aria-label={fullScreen ? 'Exit fullscreen' : 'Enter fullscreen'}
               title={fullScreen ? 'Exit fullscreen' : 'Enter fullscreen'}
-              onClick={() => setFullScreen(v => !v)}
-              style={{ padding: '6px 10px', display: 'inline-flex', alignItems: 'center', gap: 6 }}
+              onClick={() => setFullScreen((v) => !v)}
+              style={{
+                padding: '6px 10px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+              }}
             >
-              {fullScreen ? <FullscreenExitIcon fontSize="small" /> : <FullscreenIcon fontSize="small" />}
-              <span style={{ fontWeight: 700 }}>{fullScreen ? 'Exit' : 'Fullscreen'}</span>
+              {fullScreen ? (
+                <FullscreenExitIcon fontSize="small" />
+              ) : (
+                <FullscreenIcon fontSize="small" />
+              )}
+              <span style={{ fontWeight: 700 }}>
+                {fullScreen ? 'Exit' : 'Fullscreen'}
+              </span>
             </button>
           </div>
         </div>

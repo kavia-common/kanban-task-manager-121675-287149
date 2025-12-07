@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from "react";
-import { useKanban } from "../KanbanContext";
-import "./FilterPanel.css";
+import React, { useMemo, useState } from 'react';
+import { useKanban } from '../KanbanContext';
+import './FilterPanel.css';
 import {
   Select,
   MenuItem,
@@ -14,35 +14,35 @@ import {
   useTheme,
   Autocomplete,
   TextField,
-} from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
-import FlagIcon from "@mui/icons-material/Flag";
-import ViewColumnIcon from "@mui/icons-material/ViewColumn";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import EventIcon from "@mui/icons-material/Event";
+} from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
+import FlagIcon from '@mui/icons-material/Flag';
+import ViewColumnIcon from '@mui/icons-material/ViewColumn';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import EventIcon from '@mui/icons-material/Event';
 
 // Helper: get unique field values for multi-selects
 function getUniqueFieldValues(cards, field) {
   return Array.from(
-    new Set(cards.map((c) => (c[field] || "").trim()).filter(Boolean))
+    new Set(cards.map((c) => (c[field] || '').trim()).filter(Boolean)),
   ).sort((a, b) => a.localeCompare(b));
 }
 
 // Render MUI chips with minimal style
 function renderChips(values, getLabel, onDelete) {
   return (
-    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.7 }}>
+    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.7 }}>
       {values.map((val) => (
         <Chip
           key={val}
           label={getLabel(val)}
           size="small"
           sx={{
-            bgcolor: "var(--color-bg-chip, #263949)",
-            color: "var(--color-chip-text, #ebfdff)",
+            bgcolor: 'var(--color-bg-chip, #263949)',
+            color: 'var(--color-chip-text, #ebfdff)',
             fontWeight: 600,
-            m: "1px",
-            ".MuiChip-deleteIcon": { color: "#ef8585" },
+            m: '1px',
+            '.MuiChip-deleteIcon': { color: '#ef8585' },
           }}
           onDelete={onDelete ? () => onDelete(val) : undefined}
         />
@@ -67,8 +67,8 @@ export default function FilterPanel({ onFiltersChange }) {
     statuses: [],
     priorities: [],
     columns: [],
-    dueFrom: "",
-    dueTo: "",
+    dueFrom: '',
+    dueTo: '',
   });
 
   React.useEffect(() => {
@@ -78,20 +78,20 @@ export default function FilterPanel({ onFiltersChange }) {
 
   // Build options
   const assigneeOptions = useMemo(
-    () => getUniqueFieldValues(cards, "assignee"),
-    [cards]
+    () => getUniqueFieldValues(cards, 'assignee'),
+    [cards],
   );
   const priorityOptions = useMemo(
-    () => getUniqueFieldValues(cards, "priority"),
-    [cards]
+    () => getUniqueFieldValues(cards, 'priority'),
+    [cards],
   );
   const statusOptions = useMemo(
-    () => getUniqueFieldValues(cards, "status"),
-    [cards]
+    () => getUniqueFieldValues(cards, 'status'),
+    [cards],
   );
   const columnOptions = useMemo(
     () => columns.map((col) => ({ id: col.id, title: col.title })),
-    [columns]
+    [columns],
   );
 
   // Change handlers for filters
@@ -120,9 +120,9 @@ export default function FilterPanel({ onFiltersChange }) {
 
   function clearFilter(field) {
     setFilters((prev) =>
-      ["dueFrom", "dueTo"].includes(field)
-        ? { ...prev, [field]: "" }
-        : { ...prev, [field]: [] }
+      ['dueFrom', 'dueTo'].includes(field)
+        ? { ...prev, [field]: '' }
+        : { ...prev, [field]: [] },
     );
   }
 
@@ -132,8 +132,8 @@ export default function FilterPanel({ onFiltersChange }) {
       priorities: [],
       statuses: [],
       columns: [],
-      dueFrom: "",
-      dueTo: ""
+      dueFrom: '',
+      dueTo: '',
     });
   }
 
@@ -145,22 +145,26 @@ export default function FilterPanel({ onFiltersChange }) {
   function renderActiveChips() {
     const chips = [];
     filters.assignees.forEach((a) =>
-      chips.push({ label: a, field: "assignees", value: a })
+      chips.push({ label: a, field: 'assignees', value: a }),
     );
     filters.priorities.forEach((p) =>
-      chips.push({ label: p, field: "priorities", value: p })
+      chips.push({ label: p, field: 'priorities', value: p }),
     );
     filters.statuses.forEach((s) =>
-      chips.push({ label: s, field: "statuses", value: s })
+      chips.push({ label: s, field: 'statuses', value: s }),
     );
     filters.columns.forEach((colId) => {
       const col = columnOptions.find((c) => c.id === colId);
-      chips.push({ label: col ? col.title : colId, field: "columns", value: colId });
+      chips.push({
+        label: col ? col.title : colId,
+        field: 'columns',
+        value: colId,
+      });
     });
     if (filters.dueFrom)
-      chips.push({ label: `Due ≥ ${filters.dueFrom}`, field: "dueFrom" });
+      chips.push({ label: `Due ≥ ${filters.dueFrom}`, field: 'dueFrom' });
     if (filters.dueTo)
-      chips.push({ label: `Due ≤ ${filters.dueTo}`, field: "dueTo" });
+      chips.push({ label: `Due ≤ ${filters.dueTo}`, field: 'dueTo' });
     return chips;
   }
 
@@ -172,8 +176,8 @@ export default function FilterPanel({ onFiltersChange }) {
   const selectSx = {
     minWidth: 86,
     maxWidth: { xs: 150, sm: 200 },
-    fontSize: ".98em",
-    bgcolor: "var(--input-bg, #222a3b)",
+    fontSize: '.98em',
+    bgcolor: 'var(--input-bg, #222a3b)',
     borderRadius: 1.1,
   };
 
@@ -185,10 +189,10 @@ export default function FilterPanel({ onFiltersChange }) {
         sx={{
           minWidth: 115,
           maxWidth: 200,
-          "& .MuiInputBase-root": {
-            bgcolor: "var(--input-bg, #232945)",
-            borderRadius: "10px"
-          }
+          '& .MuiInputBase-root': {
+            bgcolor: 'var(--input-bg, #232945)',
+            borderRadius: '10px',
+          },
         }}
         multiple
         disableCloseOnSelect
@@ -201,10 +205,10 @@ export default function FilterPanel({ onFiltersChange }) {
               size="small"
               variant="filled"
               sx={{
-                bgcolor: "var(--color-bg-chip, #21384d)",
-                color: "var(--color-chip-text, #ebfdff)",
+                bgcolor: 'var(--color-bg-chip, #21384d)',
+                color: 'var(--color-chip-text, #ebfdff)',
                 fontWeight: 600,
-                fontSize: ".97em"
+                fontSize: '.97em',
               }}
               label={option}
               {...getTagProps({ index })}
@@ -232,20 +236,22 @@ export default function FilterPanel({ onFiltersChange }) {
             InputProps={{
               ...params.InputProps,
               startAdornment: (
-                <Box sx={{ mr: 0.7, mt: "2px", color: "var(--primary,#38B2AC)" }}>
+                <Box
+                  sx={{ mr: 0.7, mt: '2px', color: 'var(--primary,#38B2AC)' }}
+                >
                   {icon}
                 </Box>
               ),
-              sx: { bgcolor: "var(--input-bg, #252B38)" }
+              sx: { bgcolor: 'var(--input-bg, #252B38)' },
             }}
             sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "8px",
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
                 px: 0.7,
                 py: 0.3,
-                background: "var(--input-bg, #212a3b)",
-                fontSize: ".97em",
-              }
+                background: 'var(--input-bg, #212a3b)',
+                fontSize: '.97em',
+              },
             }}
           />
         )}
@@ -265,10 +271,10 @@ export default function FilterPanel({ onFiltersChange }) {
         sx={{
           minWidth: 120,
           maxWidth: 195,
-          "& .MuiInputBase-root": {
-            bgcolor: "var(--input-bg, #232945)",
-            borderRadius: "10px"
-          }
+          '& .MuiInputBase-root': {
+            bgcolor: 'var(--input-bg, #232945)',
+            borderRadius: '10px',
+          },
         }}
         multiple
         disableCloseOnSelect
@@ -287,10 +293,10 @@ export default function FilterPanel({ onFiltersChange }) {
               size="small"
               variant="filled"
               sx={{
-                bgcolor: "var(--color-bg-chip,#21384d)",
-                color: "var(--color-chip-text,#ebfdff)",
+                bgcolor: 'var(--color-bg-chip,#21384d)',
+                color: 'var(--color-chip-text,#ebfdff)',
                 fontWeight: 600,
-                fontSize: ".97em"
+                fontSize: '.97em',
               }}
               label={option.title}
               {...getTagProps({ index })}
@@ -318,20 +324,22 @@ export default function FilterPanel({ onFiltersChange }) {
             InputProps={{
               ...params.InputProps,
               startAdornment: (
-                <Box sx={{ mr: 0.5, mt: "1px", color: "var(--primary,#38B2AC)" }}>
+                <Box
+                  sx={{ mr: 0.5, mt: '1px', color: 'var(--primary,#38B2AC)' }}
+                >
                   <ViewColumnIcon fontSize="small" />
                 </Box>
               ),
-              sx: { bgcolor: "var(--input-bg, #252B38)" }
+              sx: { bgcolor: 'var(--input-bg, #252B38)' },
             }}
             sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "8px",
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
                 px: 0.7,
                 py: 0.3,
-                background: "var(--input-bg, #212a3b)",
-                fontSize: ".97em",
-              }
+                background: 'var(--input-bg, #212a3b)',
+                fontSize: '.97em',
+              },
             }}
           />
         )}
@@ -350,95 +358,117 @@ export default function FilterPanel({ onFiltersChange }) {
       className="kanban-filter-panel"
       aria-label="Kanban Filter Panel"
       role="region"
-      style={{ padding: "7px 0 3px 0", background: "var(--color-bg-surface,#222937)" }}
+      style={{
+        padding: '7px 0 3px 0',
+        background: 'var(--color-bg-surface,#222937)',
+      }}
     >
       <form
         className="filter-row"
-        onSubmit={e => e.preventDefault()}
+        onSubmit={(e) => e.preventDefault()}
         spellCheck={false}
         autoComplete="off"
         aria-label="Kanban Filters"
         style={{
-          flexWrap: "wrap",
-          gap: "10px",
-          alignItems: "center",
-          marginBottom: "3px",
+          flexWrap: 'wrap',
+          gap: '10px',
+          alignItems: 'center',
+          marginBottom: '3px',
           minWidth: 0,
         }}
       >
         {/* ASSIGNEE multi-select */}
-        <div style={{ minWidth: 0, display: "flex", alignItems: "center", gap: 6 }}>
+        <div
+          style={{ minWidth: 0, display: 'flex', alignItems: 'center', gap: 6 }}
+        >
           {MultiAutocomplete(
-            "assignees",
+            'assignees',
             assigneeOptions,
-            "Assignee(s)",
+            'Assignee(s)',
             <PersonIcon fontSize="small" />,
-            "Assignees"
+            'Assignees',
           )}
         </div>
         {/* PRIORITY multi-select */}
-        <div style={{ minWidth: 0, display: "flex", alignItems: "center", gap: 6 }}>
+        <div
+          style={{ minWidth: 0, display: 'flex', alignItems: 'center', gap: 6 }}
+        >
           {MultiAutocomplete(
-            "priorities",
+            'priorities',
             priorityOptions,
-            "Priority(ies)",
-            <FlagIcon fontSize="small" style={{ color: "#ed6644" }} />,
-            "Priority"
+            'Priority(ies)',
+            <FlagIcon fontSize="small" style={{ color: '#ed6644' }} />,
+            'Priority',
           )}
         </div>
         {/* STATUS multi-select */}
-        <div style={{ minWidth: 0, display: "flex", alignItems: "center", gap: 6 }}>
+        <div
+          style={{ minWidth: 0, display: 'flex', alignItems: 'center', gap: 6 }}
+        >
           {MultiAutocomplete(
-            "statuses",
+            'statuses',
             statusOptions,
-            "Status(es)",
-            <AssignmentIcon fontSize="small" style={{ color: "#72e0d7" }} />,
-            "Status"
+            'Status(es)',
+            <AssignmentIcon fontSize="small" style={{ color: '#72e0d7' }} />,
+            'Status',
           )}
         </div>
         {/* COLUMN multi-select */}
-        <div style={{ minWidth: 0, display: "flex", alignItems: "center", gap: 6 }}>
+        <div
+          style={{ minWidth: 0, display: 'flex', alignItems: 'center', gap: 6 }}
+        >
           {ColumnMultiAutocomplete()}
         </div>
         {/* Due Date Range */}
         <div
           style={{
-            minWidth: 0, display: "flex", alignItems: "center", gap: 4,
-            marginLeft: 10
+            minWidth: 0,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            marginLeft: 10,
           }}
         >
-          <EventIcon fontSize="small" style={{ color: "#c6fa94", marginRight: 2 }} />
+          <EventIcon
+            fontSize="small"
+            style={{ color: '#c6fa94', marginRight: 2 }}
+          />
           <input
             type="date"
             value={filters.dueFrom}
-            onChange={e => handleDateChange("dueFrom", e.target.value)}
+            onChange={(e) => handleDateChange('dueFrom', e.target.value)}
             className="filter-date"
             aria-label="Due date from"
             style={{
               minWidth: 69,
-              fontSize: ".93em",
+              fontSize: '.93em',
               borderRadius: 8,
               height: 32,
-              background: "var(--input-bg,#212a3b)",
-              color: "var(--color-text-main,#fff)",
-              border: "1.5px solid var(--input-border,#38B2AC)"
+              background: 'var(--input-bg,#212a3b)',
+              color: 'var(--color-text-main,#fff)',
+              border: '1.5px solid var(--input-border,#38B2AC)',
             }}
           />
-          <span aria-hidden style={{ color: "#888", fontWeight: 400, margin: "0 2px" }}>–</span>
+          <span
+            aria-hidden
+            style={{ color: '#888', fontWeight: 400, margin: '0 2px' }}
+          >
+            –
+          </span>
           <input
             type="date"
             value={filters.dueTo}
-            onChange={e => handleDateChange("dueTo", e.target.value)}
+            onChange={(e) => handleDateChange('dueTo', e.target.value)}
             className="filter-date"
             aria-label="Due date to"
             style={{
               minWidth: 69,
-              fontSize: ".93em",
+              fontSize: '.93em',
               borderRadius: 8,
               height: 32,
-              background: "var(--input-bg,#212a3b)",
-              color: "var(--color-text-main,#fff)",
-              border: "1.5px solid var(--input-border,#38B2AC)"
+              background: 'var(--input-bg,#212a3b)',
+              color: 'var(--color-text-main,#fff)',
+              border: '1.5px solid var(--input-border,#38B2AC)',
             }}
           />
         </div>
@@ -449,13 +479,13 @@ export default function FilterPanel({ onFiltersChange }) {
           aria-label="Reset all filters"
           title="Reset all filter fields to default"
           style={{
-            background: "#132944",
-            color: "#ff8070",
+            background: '#132944',
+            color: '#ff8070',
             fontWeight: 700,
             marginLeft: 9,
-            fontSize: ".98em",
-            padding: "7px 15px",
-            borderRadius: "12px"
+            fontSize: '.98em',
+            padding: '7px 15px',
+            borderRadius: '12px',
           }}
           onClick={resetFilters}
         >
@@ -468,10 +498,10 @@ export default function FilterPanel({ onFiltersChange }) {
         role="list"
         aria-label="Active filter list"
         style={{
-          margin: "2px 0 0 0",
-          gap: "4px",
-          minHeight: "18px",
-          flexWrap: "wrap",
+          margin: '2px 0 0 0',
+          gap: '4px',
+          minHeight: '18px',
+          flexWrap: 'wrap',
         }}
       >
         {renderActiveChips().map((chip) => (
@@ -480,11 +510,11 @@ export default function FilterPanel({ onFiltersChange }) {
             className="filter-chip"
             key={chip.label + String(chip.value)}
             style={{
-              fontSize: ".92em",
-              padding: "2.7px 9px",
+              fontSize: '.92em',
+              padding: '2.7px 9px',
               minHeight: 24,
-              background: "var(--chip-bg,#213a4d)",
-              color: "var(--color-chip-text,#ebfdff)",
+              background: 'var(--chip-bg,#213a4d)',
+              color: 'var(--color-chip-text,#ebfdff)',
               borderRadius: 13,
               marginRight: 3,
               marginBottom: 3,
@@ -501,8 +531,10 @@ export default function FilterPanel({ onFiltersChange }) {
                   ? handleChipDelete(chip.field, chip.value)
                   : clearFilter(chip.field)
               }
-              style={{ marginLeft: "4px", fontSize: ".95em", color: "#ef8585" }}
-            >×</button>
+              style={{ marginLeft: '4px', fontSize: '.95em', color: '#ef8585' }}
+            >
+              ×
+            </button>
           </span>
         ))}
       </div>

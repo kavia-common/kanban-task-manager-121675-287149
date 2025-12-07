@@ -1,5 +1,7 @@
 import js from '@eslint/js';
 import reactPlugin from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import prettierConfig from 'eslint-config-prettier';
 
 export default [
   {
@@ -11,7 +13,7 @@ export default [
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
-        ecmaFeatures: { jsx: true }
+        ecmaFeatures: { jsx: true },
       },
       globals: {
         // Browser + testing globals used in the project
@@ -25,14 +27,16 @@ export default [
         console: true,
         require: true,
         test: true,
-        expect: true
-      }
+        expect: true,
+      },
     },
     plugins: {
-      react: reactPlugin
+      react: reactPlugin,
+      'react-hooks': reactHooks,
     },
     rules: {
       ...js.configs.recommended.rules,
+      ...reactHooks.configs.recommended.rules,
 
       // React JSX rules for React 17+ (no need to import React)
       'react/react-in-jsx-scope': 'off',
@@ -48,17 +52,18 @@ export default [
           args: 'after-used',
           ignoreRestSiblings: true,
           varsIgnorePattern: '^(React|App|_ignored|_unused)$',
-          argsIgnorePattern: '^_'
-        }
+          argsIgnorePattern: '^_',
+        },
       ],
 
       // Keep core no-undef on, but browser-specific globals are declared above
-      'no-undef': 'error'
+      'no-undef': 'error',
     },
     settings: {
       react: {
-        version: 'detect'
-      }
-    }
-  }
+        version: 'detect',
+      },
+    },
+  },
+  prettierConfig,
 ];

@@ -53,7 +53,7 @@ function AssigneeAutocomplete({
         {...inputProps}
       />
       <datalist id={listId}>
-        {options.map(opt => (
+        {options.map((opt) => (
           <option key={opt} value={opt} />
         ))}
       </datalist>

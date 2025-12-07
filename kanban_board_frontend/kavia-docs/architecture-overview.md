@@ -39,6 +39,7 @@ Kavia-kanban/
 ```
 
 Key observations:
+
 - The codebase adopts a standard single-page React structure with all logic under `src/`.
 - `components/` contains modular UI components that form the Kanban board.
 - Dedicated CSS files per major UI part (e.g., `App.css`, `KanbanBoard.css`, `FilterPanel.css`).
@@ -82,7 +83,7 @@ Key observations:
 
 #### State Management
 
-- **State Management Pattern:**  
+- **State Management Pattern:**
   - Centralized in `KanbanContext.js` using React's Context API.
   - Holds top-level state: list of board columns, list of cards, and loading/error flags.
   - All CRUD and board/card mutations route through context methods, which in turn call Supabase via `kanbanSupabase.js`.
@@ -118,6 +119,7 @@ Key observations:
   </KanbanBoard>
 </App>
 ```
+
 - **Modal dialogs** (for editing/adding cards/columns, and for toasts) use ReactDOM portals for correct overlay layering.
 - The Kanban board is visually the main area, horizontally scrolling on mobile, responsive flexbox on desktop.
 - The Toolbar and FilterPanel are sticky above the board.
@@ -128,21 +130,25 @@ Key observations:
 ## Theming and Visual Design
 
 **Theme Style:**
+
 - The design is _dark, modern, and minimal_, with a strong KAVIA brand accent color scheme.
 - No external heavy CSS/UI frameworks are used; all styling is defined via `App.css`, `KanbanBoard.css`, and component-level CSS.
 
 **Colors:**
+
 - The palette is defined using CSS variables in `App.css` (see README excerpt):
   - Accent: `--color-accent: #38cfcf;` and related.
   - Background/fill: several variables for panels/cards/overlays.
   - Card-state and pill/badge coloring is mapped by status/priority using intuitive pastel coding for accessible, high-contrast visuals.
 
 **CSS Approach:**
+
 - Emphasizes CSS custom properties (variables) for semantic and maintainable theming.
 - Common reusable styles for buttons, containers, typography.
 - Responsive breakpoints tuned for usability on desktop and mobile.
 
 **Accessibility:**
+
 - All major controls and modals have ARIA/labeling and keyboard focus management.
 - Sufficient color contrast (WCAG AA per comments in `App.css`).
 - Keyboard navigation for DnD supported in columns.
@@ -168,17 +174,17 @@ Key observations:
 
 ## Summary Table: Key App Concerns
 
-| Concern               | How Addressed                                       |
-|---------------------- | --------------------------------------------------- |
-| State Management      | Centralized React Context, Context API              |
-| Data Persistence      | Supabase Postgres with real-time synchronization    |
-| Drag & Drop           | React DnD (cards, columns reorderings)              |
-| Filtering/Grouping    | Local state + UI filter panel, flexible logic       |
-| Theming/Design        | Pure CSS, dark modern, semantic variables           |
-| Responsiveness        | Mobile-first, adaptive via CSS media queries        |
-| Modals/Toasts         | Custom React Portals, high UX polish                |
-| Accessibility (a11y)  | Labels, focus management, ARIA, color contrast      |
-| Bulk Input/Export     | XLSX file import/export, mapped to schema           |
+| Concern              | How Addressed                                    |
+| -------------------- | ------------------------------------------------ |
+| State Management     | Centralized React Context, Context API           |
+| Data Persistence     | Supabase Postgres with real-time synchronization |
+| Drag & Drop          | React DnD (cards, columns reorderings)           |
+| Filtering/Grouping   | Local state + UI filter panel, flexible logic    |
+| Theming/Design       | Pure CSS, dark modern, semantic variables        |
+| Responsiveness       | Mobile-first, adaptive via CSS media queries     |
+| Modals/Toasts        | Custom React Portals, high UX polish             |
+| Accessibility (a11y) | Labels, focus management, ARIA, color contrast   |
+| Bulk Input/Export    | XLSX file import/export, mapped to schema        |
 
 ---
 
@@ -221,18 +227,19 @@ The Kavia KanbanSync React frontend codebase is a modern, highly modular and acc
 
 ---
 
-**Sources:**  
-- `Kavia-kanban/kavia_kanbansync/package.json`  
-- `Kavia-kanban/kavia_kanbansync/README.md`  
-- `Kavia-kanban/kavia_kanbansync/src/App.js`, `App.css`  
-- `Kavia-kanban/kavia_kanbansync/src/KanbanBoard.js`, `KanbanBoard.css`  
-- `Kavia-kanban/kavia_kanbansync/src/KanbanContext.js`  
-- `Kavia-kanban/kavia_kanbansync/src/components/Toolbar.js`  
-- `Kavia-kanban/kavia_kanbansync/src/components/FilterPanel.js`, `FilterPanel.css`  
-- `Kavia-kanban/kavia_kanbansync/src/components/Column.js`  
-- `Kavia-kanban/kavia_kanbansync/src/components/CardList.js`  
-- `Kavia-kanban/kavia_kanbansync/src/components/KanbanCard.js`  
-- `Kavia-kanban/kavia_kanbansync/src/components/ToastModal.js`  
-- `Kavia-kanban/kavia_kanbansync/src/components/dndTypes.js`  
-- `Kavia-kanban/kavia_kanbansync/src/kanbanSupabase.js`  
+**Sources:**
+
+- `Kavia-kanban/kavia_kanbansync/package.json`
+- `Kavia-kanban/kavia_kanbansync/README.md`
+- `Kavia-kanban/kavia_kanbansync/src/App.js`, `App.css`
+- `Kavia-kanban/kavia_kanbansync/src/KanbanBoard.js`, `KanbanBoard.css`
+- `Kavia-kanban/kavia_kanbansync/src/KanbanContext.js`
+- `Kavia-kanban/kavia_kanbansync/src/components/Toolbar.js`
+- `Kavia-kanban/kavia_kanbansync/src/components/FilterPanel.js`, `FilterPanel.css`
+- `Kavia-kanban/kavia_kanbansync/src/components/Column.js`
+- `Kavia-kanban/kavia_kanbansync/src/components/CardList.js`
+- `Kavia-kanban/kavia_kanbansync/src/components/KanbanCard.js`
+- `Kavia-kanban/kavia_kanbansync/src/components/ToastModal.js`
+- `Kavia-kanban/kavia_kanbansync/src/components/dndTypes.js`
+- `Kavia-kanban/kavia_kanbansync/src/kanbanSupabase.js`
 - `Kavia-kanban/kavia_kanbansync/src/index.js`, `index.css`

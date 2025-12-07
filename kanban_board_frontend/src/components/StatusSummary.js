@@ -21,7 +21,8 @@ export default function StatusSummary() {
     if (s.includes('progress')) return 'inprogress';
     if (s.includes('hold')) return 'hold';
     if (s.includes('done')) return 'done';
-    if (s.includes('to do') || s.includes('todo') || s.includes('backlog')) return 'todo';
+    if (s.includes('to do') || s.includes('todo') || s.includes('backlog'))
+      return 'todo';
     return null;
   };
 
@@ -36,7 +37,11 @@ export default function StatusSummary() {
 
   // Even when loading/errored, show the bar (with zeros) to keep layout stable
   return (
-    <div className="product-summary" role="region" aria-label="Live status summary">
+    <div
+      className="product-summary"
+      role="region"
+      aria-label="Live status summary"
+    >
       <div className="container">
         <div className="status-row">
           <div className="status-chip" title="To Do">
@@ -61,8 +66,19 @@ export default function StatusSummary() {
           </div>
         </div>
         {(isLoading || error) && (
-          <span style={{ display: 'inline-block', marginTop: 6, color: '#8b6b60', fontSize: '0.9rem' }}>
-            {isLoading ? 'Updating…' : error ? 'Live data may be delayed.' : null}
+          <span
+            style={{
+              display: 'inline-block',
+              marginTop: 6,
+              color: '#8b6b60',
+              fontSize: '0.9rem',
+            }}
+          >
+            {isLoading
+              ? 'Updating…'
+              : error
+                ? 'Live data may be delayed.'
+                : null}
           </span>
         )}
       </div>
