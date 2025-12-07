@@ -1,0 +1,15 @@
+DIAGNOSTIC REPORT
+=================
+
+1. Server Startup:
+   - The React development server successfully starts.
+   - It binds to TCP port 3000.
+   - It binds to 0.0.0.0 (accessible via network IP 172.17.0.2).
+
+2. Configuration Mismatches:
+   - File Location: The `.env` file is located at `../.env` relative to the frontend workspace (`kanban_board_frontend`). `react-scripts` expects the `.env` file to be in the project root (next to `package.json`). Consequently, the environment variables in `.env` are likely NOT being loaded.
+   - Variable Name: The `.env` file defines `REACT_APP_PORT=3000`. However, `react-scripts` uses the `PORT` environment variable to determine which port to listen on. `REACT_APP_*` variables are reserved for injection into the application bundle. While the values (3000) match the default, the variable name is incorrect for configuring the server port.
+
+3. Conclusion:
+   - Port 3000 is open and listening.
+   - The application configuration is not being loaded due to the `.env` file location.
