@@ -211,6 +211,44 @@ export function KanbanProvider({ children }) {
   };
 
   // PUBLIC_INTERFACE
+  /**
+   * clearBoard - Deletes all cards from the board.
+   * This operation clears all tasks across all columns.
+   * @returns {Promise<Error|null>} Returns error object if failed, null if successful
+   */
+  const clearBoard = async () => {
+    try {
+      // Delete all cards from Supabase
+      const { error } = await supabase
+        .from('kanban_cards')
+        .delete()
+        .neq('id', 0); // Delete all records (neq with impossible value)
+
+      if (error) {
+        // eslint-disable-next-line no-console
+        console.error('[KanbanContext.clearBoard] Supabase delete error:', error);
+        setError(error.message || 'Failed to clear board.');
+        return error;
+      }
+
+      // Clear local state immediately
+      setCards([]);
+      
+      // Refresh to ensure consistency
+      await fetchAll();
+      
+      setError(null);
+      return null;
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('[KanbanContext.clearBoard] Exception thrown:', e);
+      const errorMsg = e.message || 'Unexpected error occurred during board clear.';
+      setError(errorMsg);
+      return { message: errorMsg };
+    }
+  };
+
+  // PUBLIC_INTERFACE
   return (
     <KanbanContext.Provider
       value={{
@@ -228,6 +266,7 @@ export function KanbanProvider({ children }) {
         deleteCard,
         reorderCardsInColumn,
         bulkInsertCards,
+        clearBoard,
       }}
     >
       {children}

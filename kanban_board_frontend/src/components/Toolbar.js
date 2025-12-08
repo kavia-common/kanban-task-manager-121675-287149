@@ -27,7 +27,7 @@ function downloadExcelTemplate() {
  *  - isFullscreen?: boolean to indicate current fullscreen state
  */
 function Toolbar({ onToggleFullscreen, isFullscreen }) {
-  const { addColumn, bulkInsertCards, columns } = useKanban();
+  const { addColumn, bulkInsertCards, columns, clearBoard } = useKanban();
   const inputRef = useRef();
   const { showToast } = useFeedback();
   const { isCompact, setIsCompact } = useExpandMode();
@@ -35,6 +35,9 @@ function Toolbar({ onToggleFullscreen, isFullscreen }) {
   // Modal state for Add Column
   const [addColumnModal, setAddColumnModal] = React.useState(false);
   const [newColTitle, setNewColTitle] = React.useState("");
+
+  // Modal state for Clear Board confirmation
+  const [showClearBoardModal, setShowClearBoardModal] = React.useState(false);
 
   // Modal state for Bulk Upload: which column?
   const [bulkUploadState, setBulkUploadState] = React.useState({
@@ -60,6 +63,21 @@ function Toolbar({ onToggleFullscreen, isFullscreen }) {
     await addColumn(newColTitle.trim());
     setAddColumnModal(false);
     showToast("Column added!", "success");
+  };
+
+  // Clear Board handler
+  const handleClearBoard = () => {
+    setShowClearBoardModal(true);
+  };
+
+  const handleConfirmClearBoard = async () => {
+    setShowClearBoardModal(false);
+    const error = await clearBoard();
+    if (error) {
+      showToast(`Failed to clear board: ${error.message || error}`, "error", 4000);
+    } else {
+      showToast("Board cleared successfully!", "success", 3000);
+    }
   };
 
   // Modified upload handler pattern: Read, then show modal for column select.
@@ -174,6 +192,16 @@ function Toolbar({ onToggleFullscreen, isFullscreen }) {
             onChange={handleExcelUpload}
           />
         </label>
+        <button
+          className="btn"
+          style={{ marginLeft: 8, background: '#d32f2f', color: '#fff' }}
+          onClick={handleClearBoard}
+          data-testid="clear-board-btn"
+          aria-label="Clear Board"
+          title="Clear all tasks from the board"
+        >
+          Clear Board
+        </button>
         {typeof onToggleFullscreen === 'function' && (
           <button
             className="btn"
@@ -217,6 +245,46 @@ function Toolbar({ onToggleFullscreen, isFullscreen }) {
               document.body
             )
       )}
+
+      {/* Clear Board Confirmation Modal */}
+      {showClearBoardModal && (
+        typeof document === "undefined"
+          ? null
+          : ReactDOM.createPortal(
+              <div className="kanban-modal-overlay" onClick={() => setShowClearBoardModal(false)}>
+                <div className="kanban-modal-dialog" onClick={e => e.stopPropagation()} data-testid="clear-board-modal">
+                  <button className="kanban-modal-close" onClick={() => setShowClearBoardModal(false)} title="Close">×</button>
+                  <div style={{ fontWeight: 700, fontSize: '1.3em', marginBottom: 16, color: '#d32f2f' }}>
+                    Clear Board?
+                  </div>
+                  <div style={{ marginBottom: 20, fontSize: '1.05em', lineHeight: 1.5 }}>
+                    This will permanently delete all tasks from the board. This action cannot be undone.
+                  </div>
+                  <div style={{ display: "flex", gap: 12, justifyContent: 'flex-end' }}>
+                    <button 
+                      className="btn" 
+                      type="button" 
+                      onClick={() => setShowClearBoardModal(false)}
+                      style={{ background: '#666', color: '#fff' }}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      className="btn" 
+                      type="button" 
+                      onClick={handleConfirmClearBoard}
+                      data-testid="clear-board-confirm"
+                      style={{ background: '#d32f2f', color: '#fff' }}
+                    >
+                      Yes, Clear Board
+                    </button>
+                  </div>
+                </div>
+              </div>,
+              document.body
+            )
+      )}
+
       {/* Bulk Upload Select Column Modal */}
       {bulkUploadState.showModal && (
         typeof document === "undefined"
