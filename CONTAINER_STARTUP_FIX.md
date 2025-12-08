@@ -23,7 +23,7 @@ installCommand: npm install
 
 **After:**
 ```yaml
-buildCommand: cd kanban_board_frontend && npm install && npm run build
+buildCommand: cd kanban_board_frontend && npm ci && npm run build
 startCommand: cd kanban_board_frontend && HOST=<host> PORT=<port> BROWSER=none npm start
 testCommand: cd kanban_board_frontend && CI=true npm test
 installCommand: cd kanban_board_frontend && npm install
